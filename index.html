@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بازی مخصوص ما ❤️</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.game {
+  width: 92%;
+  max-width: 500px;
+  background: rgba(0,0,0,0.25);
+  padding: 25px;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+h1 {
+  font-size: 28px;
+}
+
+.question {
+  font-size: 21px;
+  margin: 25px 0;
+  line-height: 1.8;
+}
+
+.option {
+  width: 100%;
+  border: none;
+  padding: 15px;
+  margin: 8px 0;
+  border-radius: 15px;
+  background: white;
+  color: #e91e63;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option:hover {
+  transform: scale(1.03);
+  background: #ffe5ed;
+}
+
+.timer {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px;
+}
+
+.progress {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.message {
+  font-size: 20px;
+  margin-top: 20px;
+  min-height: 30px;
+}
+
+.heart {
+  font-size: 60px;
+  animation: beat 1s infinite;
+}
+
+@keyframes beat {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.hidden {
+  display: none;
+}
+
+.restart {
+  border: none;
+  padding: 14px 25px;
+  border-radius: 15px;
+  background: white;
+  color: #e91e63;
+  font-size: 17px;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <div id="gameScreen">
+
+    <h1>❤️ بازی مخصوص ما ❤️</h1>
+
+    <div class="progress" id="progress">
+      سؤال 1 از 10
+    </div>
+
+    <div class="timer">
+      ⏳ <span id="time">15</span> ثانیه
+    </div>
+
+    <div class="question" id="question"></div>
+
+    <div id="options"></div>
+
+    <div class="message" id="message"></div>
+
+  </div>
+
+  <div id="endScreen" class="hidden">
+    <div class="heart">❤️</div>
+    <h1>قبول کردی! 😍</h1>
+    <p>پس دیگه راه برگشتی نیست 😏❤️</p>
+    <h2>دوستت دارم ❤️</h2>
+    <button class="restart" onclick="restartGame()">
+      دوباره بازی کنیم 🔥
+    </button>
+  </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+ question: "اگر الان فقط من و تو بودیم، اولین کاری که می‌کردی چی بود؟",
+ options: [
+  "بغلت می‌کردم ❤️",
+  "می‌بوسیدمت 💋",
+  "نزدیکت می‌نشستم 😏",
+  "می‌گفتم اول تو انتخاب کن 😈"
+ ]
+},
+
+{
+ question: "کدام نوع بوسه از طرف من را بیشتر دوست داری؟",
+ options: [
+  "آرام و عاشقانه ❤️",
+  "ناگهانی و غافلگیرکننده 😏",
+  "طولانی و احساسی 💋",
+  "هر مدلی که از طرف تو باشد 😈"
+ ]
+},
+
+{
+ question: "کدام قسمت ظاهر من بیشتر جذبت می‌کند؟",
+ options: [
+  "چشم‌هایم 👀",
+  "لبخندم 😊",
+  "اندامم 🔥",
+  "همه‌ش 😏❤️"
+ ]
+},
+
+{
+ question: "اگر یک شب فقط برای خودمان داشته باشیم، دوست داری چطور بگذرد؟",
+ options: [
+  "فیلم و بغل کردن 🎬❤️",
+  "شام دونفره و حرف‌های عاشقانه 🥰",
+  "یک شب پر از شیطنت 😏",
+  "بگذار سورپرایزت کنم 😈"
+ ]
+},
+
+{
+ question: "دوست داری بیشتر نازت کنم یا تو نازم کنی؟",
+ options: [
+  "تو منو ناز کن ❤️",
+  "من تو رو ناز می‌کنم 🥰",
+  "نصف‌نصف 😏",
+  "هر دو باهم 😈"
+ ]
+},
+
+{
+ question: "اگر خیلی نزدیکت بنشینم، چه واکنشی نشان می‌دهی؟",
+ options: [
+  "لبخند می‌زنم 😊",
+  "دستت را می‌گیرم ❤️",
+  "خودم را نزدیک‌تر می‌کنم 😏",
+  "می‌گم این‌قدر نزدیک چرا؟ 😈"
+ ]
+},
+
+{
+ question: "کدام لحظه بین ما برایت هیجان‌انگیزتر است؟",
+ options: [
+  "وقتی نگاهم می‌کنی 👀",
+  "وقتی بغلم می‌کنی 🤗",
+  "وقتی خیلی نزدیک هم هستیم 🔥",
+  "همه‌ش ❤️‍🔥"
+ ]
+},
+
+{
+ question: "اگر یک خواسته عاشقانه از من داشته باشی، کدام را انتخاب می‌کنی؟",
+ options: [
+  "یک بغل طولانی ❤️",
+  "یک قرار دونفره رمانتیک 🥰",
+  "یک شب پر از هیجان 😏",
+  "نمی‌گم؛ خودت باید حدس بزنی 😈"
+ ]
+},
+
+{
+ question: "قرار بعدی‌مان را چطور دوست داری؟",
+ options: [
+  "آرام و رمانتیک 🌹",
+  "پر از خنده و شوخی 😂",
+  "کمی شیطنت‌آمیز 😏",
+  "کاملاً سورپرایزی 😈"
+ ]
+},
+
+{
+ question: "حاضری همیشه کنارم باشی؟ ❤️",
+ options: [
+  "نه، فعلاً نه ❌",
+  "نه، باید بیشتر فکر کنم 😏❌",
+  "شاید بعداً ❌",
+  "بلی، همیشه کنارتم ❤️"
+ ]
+}
+
+];
+
+let currentQuestion = 0;
+let timeLeft = 15;
+let timer;
+
+const questionElement = document.getElementById("question");
+const optionsElement = document.getElementById("options");
+const timeElement = document.getElementById("time");
+const progressElement = document.getElementById("progress");
+const messageElement = document.getElementById("message");
+
+function loadQuestion() {
+
+  clearInterval(timer);
+
+  const q = questions[currentQuestion];
+
+  questionElement.textContent = q.question;
+
+  progressElement.textContent =
+    "سؤال " + (currentQuestion + 1) + " از " + questions.length;
+
+  optionsElement.innerHTML = "";
+
+  messageElement.textContent = "";
+
+  q.options.forEach((option, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "option";
+    button.textContent = option;
+
+    button.onclick = () => selectAnswer(index);
+
+    optionsElement.appendChild(button);
+
+  });
+
+  startTimer();
+}
+
+
+function startTimer() {
+
+  timeLeft = 15;
+  timeElement.textContent = timeLeft;
+
+  timer = setInterval(() => {
+
+    timeLeft--;
+
+    timeElement.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timer);
+
+      messageElement.textContent =
+        "⏰ وقتت تموم شد 😏 دوباره انتخاب کن!";
+
+      setTimeout(() => {
+        loadQuestion();
+      }, 1200);
+
+    }
+
+  }, 1000);
+
+}
+
+
+function selectAnswer(index) {
+
+  clearInterval(timer);
+
+  // سؤال آخر
+  if (currentQuestion === 9) {
+
+    // فقط جواب چهارم قبول است
+    if (index === 3) {
+
+      document.getElementById("gameScreen")
+        .classList.add("hidden");
+
+      document.getElementById("endScreen")
+        .classList.remove("hidden");
+
+    } else {
+
+      messageElement.textContent =
+        "😏 جواب اشتباه بود... هنوز قبول نکردم! دوباره انتخاب کن ❤️";
+
+      setTimeout(() => {
+
+        messageElement.textContent = "";
+
+        loadQuestion();
+
+      }, 1200);
+
+    }
+
+    return;
+  }
+
+
+  // پیام بعد از انتخاب
+  const messages = [
+    "انتخاب قشنگی بود ❤️",
+    "اوه... این جواب خیلی جالب بود 😏",
+    "هر جوابی دادی، باز هم دوستت دارم ❤️",
+    "پس بیشتر از چیزی که فکر می‌کردم شیطونی 😈❤️"
+  ];
+
+  messageElement.textContent =
+    messages[Math.floor(Math.random() * messages.length)];
+
+
+  setTimeout(() => {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+      loadQuestion();
+    }
+
+  }, 1200);
+
+}
+
+
+function restartGame() {
+
+  currentQuestion = 0;
+
+  document.getElementById("endScreen")
+    .classList.add("hidden");
+
+  document.getElementById("gameScreen")
+    .classList.remove("hidden");
+
+  loadQuestion();
+}
+
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
